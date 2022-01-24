@@ -19,8 +19,8 @@
  *    'Tue, 26 Jan 2016 13:48:02 GMT' => Date()
  *    'Sun, 17 May 1998 03:00:00 GMT+01' => Date()
  */
-function parseDataFromRfc2822(/* value */) {
-  throw new Error('Not implemented');
+function parseDataFromRfc2822(value) {
+  return new Date(value);
 }
 
 /**
@@ -34,8 +34,8 @@ function parseDataFromRfc2822(/* value */) {
  *    '2016-01-19T16:07:37+00:00'    => Date()
  *    '2016-01-19T08:07:37Z' => Date()
  */
-function parseDataFromIso8601(/* value */) {
-  throw new Error('Not implemented');
+function parseDataFromIso8601(value) {
+  return new Date(value);
 }
 
 
@@ -53,8 +53,16 @@ function parseDataFromIso8601(/* value */) {
  *    Date(2012,1,1)    => true
  *    Date(2015,1,1)    => false
  */
-function isLeapYear(/* date */) {
-  throw new Error('Not implemented');
+function isLeapYear(date) {
+  const year = date.getFullYear();
+  if (year % 4) {
+    return false;
+  } if (year % 100) {
+    return true;
+  } if (year % 400) {
+    return false;
+  }
+  return true;
 }
 
 
@@ -73,8 +81,13 @@ function isLeapYear(/* date */) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,10,0,0,250)     => "00:00:00.250"
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
-function timeSpanToString(/* startDate, endDate */) {
-  throw new Error('Not implemented');
+function timeSpanToString(startDate, endDate) {
+  const interval = endDate - startDate;
+  const milliseconds = interval % 1000;
+  const seconds = Math.floor((interval / 1000) % 60);
+  const minutes = Math.floor((interval / (1000 * 60)) % 60);
+  const hours = Math.floor((interval / (1000 * 60 * 60)) % 24);
+  return `${String(hours).padStart(2, 0)}:${String(minutes).padStart(2, 0)}:${String(seconds).padStart(2, 0)}.${String(milliseconds).padStart(3, 0)}`;
 }
 
 
@@ -92,10 +105,14 @@ function timeSpanToString(/* startDate, endDate */) {
  *    Date.UTC(2016,2,5, 0, 0) => 0
  *    Date.UTC(2016,3,5, 3, 0) => Math.PI/2
  *    Date.UTC(2016,3,5,18, 0) => Math.PI
- *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
+ *    Date.UTC(2016,3,5,21, 0) => Math.PI/2 resultData
  */
-function angleBetweenClockHands(/* date */) {
-  throw new Error('Not implemented');
+function angleBetweenClockHands(date) {
+  const resultData = new Date(date);
+  // eslint-disable-next-line max-len
+  let injection = Math.abs(0.5 * (60 * resultData.getUTCHours() - 11 * resultData.getUTCMinutes())) % 360;
+  injection = injection > 180 ? 360 - injection : injection;
+  return (injection * Math.PI) / 180;
 }
 
 
